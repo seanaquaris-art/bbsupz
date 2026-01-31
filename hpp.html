@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+
+<style>
+
+/* ================= PART A ================= */
+
+body {
+  margin:0;
+  background:black;
+  overflow:hidden;
+  font-family:'Montserrat',sans-serif;
+}
+
+/* MATRIX */
+canvas {
+  position:fixed;
+  inset:0;
+  display:none;
+}
+
+/* POP TEXT */
+#overlay {
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  font-family:'Pacifico', cursive;
+  font-size:80px;
+  color:hotpink;
+  text-shadow:0 0 20px hotpink;
+}
+
+.pop {
+  animation:pop 0.6s ease forwards;
+}
+
+@keyframes pop {
+  0% {transform:scale(.2);opacity:0}
+  70% {transform:scale(1.3)}
+  100% {transform:scale(1);opacity:1}
+}
+
+/* GIF */
+#gifScreen {
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+#gifScreen img {
+  width:360px;
+  border-radius:20px;
+}
+
+/* CAKE SCENE */
+#cakeScene {
+  position:fixed;
+  inset:0;
+  display:none;
+  background:#f7a1b8;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+}
+
+/* Cake stack */
+
+#cakeStack {
+  position:relative;
+  width:240px;
+  height:220px;
+}
+
+.plate {
+  position:absolute;
+  bottom:0;
+  width:240px;
+  height:12px;
+  background:white;
+  border-radius:12px;
+}
+
+.layer {
+  position:absolute;
+  width:200px;
+  height:45px;
+  left:20px;
+  border-radius:10px;
+  transform:translateY(-300px);
+  opacity:0;
+}
+
+.base { background:#c98a5b; bottom:12px }
+.mid { background:#e3a873; bottom:57px }
+.top { background:#ffd1dc; bottom:102px }
+
+.drip {
+  position:absolute;
+  width:200px;
+  height:18px;
+  background:#ff79b7;
+  left:20px;
+  bottom:102px;
+  border-radius:0 0 12px 12px;
+  opacity:0;
+}
+
+.candle {
+  position:absolute;
+  width:8px;
+  height:40px;
+  background:white;
+  left:50%;
+  bottom:140px;
+  transform:translate(-50%,-300px);
+  opacity:0;
+}
+
+.flame {
+  width:12px;
+  height:12px;
+  background:orange;
+  border-radius:50%;
+  position:absolute;
+  top:-12px;
+  left:50%;
+  transform:translateX(-50%);
+  animation:flicker .3s infinite alternate;
+}
+
+@keyframes flicker {
+  from {transform:translateX(-50%) scale(1)}
+  to {transform:translateX(-50%) scale(1.3)}
+}
+
+.drop {
+  animation:fall .9s cubic-bezier(.22,1.6,.36,1) forwards;
+}
+
+@keyframes fall {
+  0% {transform:translateY(-300px);opacity:1}
+  70% {transform:translateY(0)}
+  85% {transform:translateY(-10px)}
+  100% {transform:translateY(0)}
+}
+
+#cakeText {
+  margin-top:25px;
+  font-size:34px;
+  font-style:italic;
+  color:#ffffff;
+  opacity:0;
+  animation:fadeIn 1s forwards;
+  animation-delay:4.5s;
+}
+
+@keyframes fadeIn {
+  to {opacity:1}
+}
+
+/* ================= PART B ================= */
+
+.screen{
+  position:fixed;
+  inset:0;
+  display:none;
+  justify-content:center;
+  align-items:center;
+  background:#ffd3e2;
+}
+
+.card{
+  background:#ffe7f0;
+  padding:30px;
+  border-radius:25px;
+  text-align:center;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  width:360px;
+}
+
+.gif{
+  width:130px;
+  margin-bottom:10px;
+}
+
+.buttons{
+  margin-top:20px;
+  display:flex;
+  justify-content:space-around;
+}
+
+.yesBtn{
+  background:#ff2f6d;
+  border:none;
+  padding:14px 35px;
+  color:white;
+  font-size:18px;
+  border-radius:16px;
+  cursor:pointer;
+}
+
+.noBtn{
+  background:#4f6bff;
+  border:none;
+  padding:10px 20px;
+  color:white;
+  font-size:14px;
+  border-radius:12px;
+  cursor:pointer;
+}
+
+.giftGrid{
+  display:flex;
+  gap:20px;
+  margin-top:20px;
+}
+
+.giftBox{
+  flex:1;
+  background:#ffdce8;
+  padding:15px;
+  border-radius:18px;
+  cursor:pointer;
+}
+
+.giftBox img{
+  width:100%;
+  border-radius:12px;
+}
+
+.quizBtn{
+  background:#ff2f6d;
+  color:white;
+  border:none;
+  padding:10px 20px;
+  border-radius:12px;
+  margin:6px;
+  cursor:pointer;
+}
+
+.backBtn{
+  margin-top:15px;
+  background:#ff2f2f;
+  color:white;
+  border:none;
+  padding:12px 30px;
+  border-radius:14px;
+  cursor:pointer;
+}
+
+.letterBox{
+  background:#fff7d6;
+  padding:20px;
+  border-radius:15px;
+  font-family:Georgia,serif;
+  text-align:left;
+  font-size:15px;
+  line-height:1.6;
+  color:#444;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- PART A -->
+
+<canvas id="matrix"></canvas>
+<div id="overlay"></div>
+
+<div id="gifScreen">
+<img src="https://i.pinimg.com/originals/97/d5/46/97d54619e69ed40aeeab49fa7f54fc76.gif">
+</div>
+
+<div id="cakeScene">
+
+<div id="cakeStack">
+<div class="plate"></div>
+<div class="layer base" id="base"></div>
+<div class="layer mid" id="mid"></div>
+<div class="layer top" id="top"></div>
+<div class="drip" id="drip"></div>
+<div class="candle" id="candle">
+<div class="flame"></div>
+</div>
+</div>
+
+<div id="cakeText">happy birthday!!!</div>
+</div>
+
+<!-- PART B -->
+
+<div id="q1" class="screen">
+  <div class="card">
+    <div style="font-size:80px">🧸</div>
+    <h2>Are you 30? 🤔</h2>
+    <p>Because I am sure.</p>
+    <div class="buttons">
+      <button class="yesBtn" onclick="q1yes()">YES</button>
+      <button class="noBtn" onclick="q1no()">NO</button>
+    </div>
+  </div>
+</div>
+
+<div id="lie" class="screen">
+  <div class="card">
+    <h2>Lie Detector 🔍</h2>
+    <p id="scan">Scanning...</p>
+  </div>
+</div>
+
+<div id="q2" class="screen">
+  <div class="card">
+    <img class="gif" src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+    <h2>So you're saying you're NOT 30? 😏</h2>
+    <p>Think carefully.</p>
+    <div class="buttons">
+      <button class="yesBtn" onclick="gotoQ3()">YES</button>
+      <button class="noBtn" onclick="gotoQ3()">NO</button>
+    </div>
+  </div>
+</div>
+
+<div id="q3" class="screen">
+  <div class="card">
+    <img class="gif" src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
+    <h2>No escape now 😼<br>Accept it?</h2>
+    <div class="buttons">
+      <button class="yesBtn" onclick="accepted()">YES</button>
+      <button class="noBtn" onclick="accepted()">NO</button>
+    </div>
+  </div>
+</div>
+
+<div id="accept" class="screen">
+  <div class="card">
+    <img class="gif" src="https://media.giphy.com/media/l4FGpPki5v2Bcd6Ss/giphy.gif">
+    <h2>You finally accepted it 🥹</h2>
+    <button class="yesBtn" onclick="openGifts()">Open Presents 🎁</button>
+  </div>
+</div>
+
+<div id="gifts" class="screen">
+  <div class="card">
+    <h2>Choose Your Gift 🎁</h2>
+    <div class="giftGrid">
+
+      <div class="giftBox" onclick="startQuiz()">
+        <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif">
+        <b>GIFT ONE</b>
+      </div>
+
+      <div class="giftBox" onclick="openLetter()">
+        <img src="https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif">
+        <b>GIFT TWO</b>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="quiz" class="screen">
+  <div class="card">
+    <h2>QUIZ 📝</h2>
+    <p id="quizQ"></p>
+    <div id="quizOpt"></div>
+    <button id="quizBack" class="backBtn" onclick="backToGifts()" style="display:none">⬅ BACK</button>
+  </div>
+</div>
+
+<div id="letter" class="screen">
+  <div class="card">
+    <h2>A Letter For You 💌</h2>
+    <div class="letterBox">
+      <b>Dear Gossip Girl,</b><br><br>
+      Happy Birthday 😌  
+      Thank you for being more than just a teacher Miss-Gossip,who survived us sunve Grade 11 😌
+      From jokes to scolgings to chaos,you made class fun ❤️  
+      <br><br>— Your students 😎
+    </div>
+    <button class="backBtn" onclick="backToGifts()">⬅ BACK</button>
+  </div>
+</div>
+
+<script>
+
+/* PART A */
+
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.width=innerWidth;
+canvas.height=innerHeight;
+
+const chars="01";
+const size=18;
+const cols=canvas.width/size;
+const drops=[];
+
+for(let i=0;i<cols;i++) drops[i]=1;
+
+let counter=null;
+
+function drawMatrix(){
+ctx.fillStyle="rgba(0,0,0,0.07)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="hotpink";
+ctx.font=size+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+let t=chars[Math.floor(Math.random()*2)];
+ctx.fillText(t,i*size,drops[i]*size);
+if(drops[i]*size>canvas.height && Math.random()>0.975) drops[i]=0;
+drops[i]++;
+}
+
+if(counter){
+ctx.font="bold 140px monospace";
+ctx.textAlign="center";
+ctx.fillText(counter,canvas.width/2,canvas.height/2);
+}
+}
+
+window.onload=startMatrix;
+
+function startMatrix(){
+canvas.style.display="block";
+setInterval(drawMatrix,50);
+
+setTimeout(()=>counter="3",2000);
+setTimeout(()=>counter="2",4500);
+setTimeout(()=>counter="1",7000);
+
+setTimeout(()=>{
+counter=null;
+canvas.style.display="none";
+showPopText();
+},9000);
+}
+
+function showPopText(){
+const overlay=document.getElementById("overlay");
+overlay.style.display="flex";
+const words=["Happy","Birthday","To","You","Gossip","Girl!!!"];
+let i=0;
+
+function next(){
+if(i>=words.length){
+setTimeout(()=>{
+overlay.style.display="none";
+showGif();
+},700);
+return;
+}
+overlay.textContent=words[i];
+overlay.className="pop";
+void overlay.offsetWidth;
+overlay.className="pop";
+i++;
+setTimeout(next,700);
+}
+next();
+}
+
+function showGif(){
+document.getElementById("gifScreen").style.display="flex";
+setTimeout(()=>{
+document.getElementById("gifScreen").style.display="none";
+startCake();
+},5000);
+}
+
+function startCake(){
+document.getElementById("cakeScene").style.display="flex";
+setTimeout(()=>drop("base"),800);
+setTimeout(()=>drop("mid"),1600);
+setTimeout(()=>drop("top"),2400);
+setTimeout(()=>document.getElementById("drip").style.opacity=1,3200);
+setTimeout(()=>drop("candle"),4000);
+
+/* JUMP TO PART B */
+setTimeout(()=>{
+document.getElementById("cakeScene").style.display="none";
+document.getElementById("q1").style.display="flex";
+},6500);
+}
+
+function drop(id){
+const el=document.getElementById(id);
+el.style.opacity=1;
+el.classList.add("drop");
+}
+
+/* PART B */
+
+const q1=document.getElementById("q1");
+const lie=document.getElementById("lie");
+const q2=document.getElementById("q2");
+const q3=document.getElementById("q3");
+const accept=document.getElementById("accept");
+const gifts=document.getElementById("gifts");
+const quiz=document.getElementById("quiz");
+const letter=document.getElementById("letter");
+const scan=document.getElementById("scan");
+const quizQ=document.getElementById("quizQ");
+const quizOpt=document.getElementById("quizOpt");
+const quizBack=document.getElementById("quizBack");
+
+function q1yes(){q1.style.display="none";q2.style.display="flex";}
+function q1no(){q1.style.display="none";lie.style.display="flex";setTimeout(()=>scan.innerText="LIE DETECTED 🚨",2000);setTimeout(()=>{lie.style.display="none";q2.style.display="flex";},3500);}
+function gotoQ3(){q2.style.display="none";q3.style.display="flex";}
+function accepted(){q3.style.display="none";accept.style.display="flex";}
+function openGifts(){accept.style.display="none";gifts.style.display="flex";}
+
+const quizData=[
+{q:"Which class did I start teaching you?",options:["Class 9","Class 10","Class 11"]},
+{q:"What is ur real age?",options:["25","28","30"]},
+{q:"How long have u tolerated us?",options:["1 year","2 years","Forever 😭"]},
+{q:"Do I secretly enjoy your chaos and gossip?",options:["No","Maybe","Yes obviously 😎"]}
+];
+
+let qi=0;
+
+function startQuiz(){
+gifts.style.display="none";
+quiz.style.display="flex";
+qi=0;
+quizBack.style.display="none";
+loadQuiz();
+}
+
+function loadQuiz(){
+if(qi<quizData.length){
+quizQ.innerText=quizData[qi].q;
+quizOpt.innerHTML="";
+quizData[qi].options.forEach(opt=>{
+const b=document.createElement("button");
+b.className="quizBtn";
+b.innerText=opt;
+b.onclick=()=>{qi++;loadQuiz();};
+quizOpt.appendChild(b);
+});
+}else{
+quizQ.innerText="Quiz Completed 🎉";
+quizOpt.innerHTML="<p>You survived 😎</p>";
+quizBack.style.display="block";
+}
+}
+
+function openLetter(){gifts.style.display="none";letter.style.display="flex";}
+function backToGifts(){quiz.style.display="none";letter.style.display="none";gifts.style.display="flex";}
+
+</script>
+
+</body>
+</html>
